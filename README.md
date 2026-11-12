@@ -241,18 +241,6 @@ Measured with the seeded data, on the same Postgres settings as `docker-compose.
 | Project delete refused while its store holds stock or a delivery is in transit | Material is never lost | The team must send materials back first |
 | Dependencies only added to tasks that have not started | Keeps the status rules simple and always true | A forgotten dependency cannot be added once work has begun |
 
-## Choices the brief left open
-
-- Who edits or deletes a project: project admins (and SuperAdmins).
-- Who creates, edits and deletes materials: store managers and SuperAdmins. Everyone logged in can read them.
-- A material's unit cannot change once it has stock or deliveries.
-- Withdrawn invitations disappear from the invited user's notifications. Deleting a project withdraws its pending invitations.
-- Notifications are marked read with `POST /notifications/read`. Answering an invitation also marks it read.
-- `GET /users?search=` lets admins find people to invite.
-- Deleting a task removes its dependency links and recalculates Blocked for the tasks that waited on it.
-
----
-
 ## What I would add with more time
 
 - **Automated tests.** Integration tests against a real Postgres (Testcontainers) for the rules that matter most when requests run at once: parallel deliveries, parallel project and task creation, loops added at the same moment, non-members getting `404`, logout ending the session. I checked all of these by hand with scripts during development, but they belong in CI.
@@ -263,4 +251,3 @@ Measured with the seeded data, on the same Postgres settings as `docker-compose.
 - **Partition `deliveries` and `delivery_lines` by month** once they grow into tens of millions of rows.
 - **Metrics and tracing** (Prometheus, OpenTelemetry), and SQL timings in the request logs.
 - **A dedicated database owner role** for the functions, instead of the admin user that runs migrations.
-- **Pin the Scalar version** on the docs page, or serve it from the binary so `/docs` works offline.
